@@ -6,6 +6,9 @@
     <el-form-item label="Email">
       <el-input v-model.trim="user.email" />
     </el-form-item>
+    <el-form-item label="phone">
+      <el-input v-model.trim="user.phone" />
+    </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submit">Update</el-button>
     </el-form-item>
@@ -20,17 +23,25 @@ export default {
       default: () => {
         return {
           name: '',
-          email: ''
+          email: '',
+          phone: ''
         }
       }
     }
   },
   methods: {
     submit() {
-      this.$message({
-        message: 'User information has been updated successfully',
-        type: 'success',
-        duration: 5 * 1000
+      const info = {
+        name: this.user.name,
+        email: this.user.email,
+        phone: this.user.phone
+      }
+      this.$store.dispatch('user/updateInfo', info).then((res) => {
+        this.$message({
+          message: 'User information has been updated successfully',
+          type: 'success',
+          duration: 5 * 1000
+        })
       })
     }
   }

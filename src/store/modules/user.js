@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, logout, getInfo, updateInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
@@ -6,16 +6,15 @@ const state = {
   token: getToken(),
   name: '',
   avatar: '',
-  introduction: '',
-  roles: []
+  roles: [],
+  email: '',
+  phone: '',
+  prefer: []
 }
 
 const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
-  },
-  SET_INTRODUCTION: (state, introduction) => {
-    state.introduction = introduction
   },
   SET_NAME: (state, name) => {
     state.name = name
@@ -25,6 +24,15 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_EMAIL: (state, email) => {
+    state.email = email
+  },
+  SET_PHONE: (state, phone) => {
+    state.phone = phone
+  },
+  SET_PREFER: (state, prefer) => {
+    state.prefer = prefer
   }
 }
 
@@ -53,8 +61,7 @@ const actions = {
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-
-        const { roles, name, avatar, introduction } = data
+        const { roles, name, avatar, prefer, email, phone } = data
 
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
@@ -64,7 +71,9 @@ const actions = {
         commit('SET_ROLES', roles)
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
-        commit('SET_INTRODUCTION', introduction)
+        commit('SET_EMAIL', email)
+        commit('SET_PHONE', phone)
+        commit('SET_PREFER', prefer.split('-'))
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -85,6 +94,25 @@ const actions = {
         // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
         dispatch('tagsView/delAllViews', null, { root: true })
 
+        resolve()
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
+  // update user info
+  updateInfo({ commit, state }, userInfo) {
+    const { name, phone, email } = userInfo
+    return new Promise((resolve, reject) => {
+      updateInfo({ token: state.token, name: name.trim(), phone, email }).then(response => {
+        if (!response.code) {
+          reject('Update user information failed.')
+        }
+
+        commit('SET_NAME', name)
+        commit('SET_EMAIL', email)
+        commit('SET_PHONE', phone)
         resolve()
       }).catch(error => {
         reject(error)
