@@ -60,14 +60,24 @@ export default {
           right: '5%'
         },
         xAxis: [{
-          show: false,
-          data: xAxisData
+          show: true,
+          data: xAxisData,
+          axisLabel: {
+            textStyle: {
+              color: '#4a657a'
+            }
+          }
         }, {
-          show: false,
-          data: xAxisData
+          show: true,
+          data: xAxisData,
+          axisLabel: {
+            textStyle: {
+              color: '#4a657a'
+            }
+          }
         }],
         visualMap: {
-          show: false,
+          show: true,
           min: 0,
           max: 50,
           dimension: 0,
